@@ -13,3 +13,6 @@ Automated API Test for https://reqres.in/
 Run the following command:
 - Execute test: `mvn clean test `
 - Generate test report: `mvn allure:serve`
+
+## Example Report
+![image](https://github.com/wavda/reqres-api-test/assets/71624499/37e708e2-6ff2-4dc5-8cf1-9d9c10ea528e)
