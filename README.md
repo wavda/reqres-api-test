@@ -1,9 +1,13 @@
 ## Description
 Automated API Test for https://reqres.in/
 
+## Pre-requisites
+- OpenJDK Installed
+- Maven Installed
+
 ## Tools
 - IntelliJ
-- Java
+- Java (OpenJDK 19)
 - Maven
 - TestNG
 - Rest-Assured
