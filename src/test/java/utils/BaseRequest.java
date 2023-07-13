@@ -29,11 +29,10 @@ public class BaseRequest {
      * Verifies the status code of the API response.
      *
      * @param expectedStatusCode The expected status code to compare against the actual response status code.
-     * @throws AssertionError If the expected status code does not match the actual response status code.
      */
     public void verifyStatusCode(int expectedStatusCode) {
-        assertEquals(expectedStatusCode, response.getStatusCode());
         Allure.addAttachment("Status Code", String.valueOf(response.getStatusCode()));
         Allure.addAttachment("Response Body", response.getBody().asString());
+        assertEquals(expectedStatusCode, response.getStatusCode());
     }
 }

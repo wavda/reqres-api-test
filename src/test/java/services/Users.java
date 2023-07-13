@@ -10,7 +10,6 @@ public class Users extends BaseRequest {
      * @param page    The page number to retrieve. Can be null.
      * @param perPage The number of users per page. Can be null.
      * @return A JSONObject representing the list of users.
-     * @throws RuntimeException If the request fails or the response status code is not 200.
      */
     public JSONObject getListUsers(Integer page, Integer perPage) {
         if (page != null) {
@@ -35,7 +34,6 @@ public class Users extends BaseRequest {
      *
      * @param userId The ID of the user to retrieve details for.
      * @return A JSONObject representing the details of the user.
-     * @throws RuntimeException If the API request fails or the response status code is not 200.
      */
     public JSONObject getDetailUser(String userId) {
         response = request
