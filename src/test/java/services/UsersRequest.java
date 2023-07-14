@@ -3,7 +3,7 @@ package services;
 import org.json.JSONObject;
 import utils.BaseRequest;
 
-public class Users extends BaseRequest {
+public class UsersRequest extends BaseRequest {
     /**
      * Retrieves a list of users.
      *
@@ -13,20 +13,20 @@ public class Users extends BaseRequest {
      */
     public JSONObject getListUsers(Integer page, Integer perPage) {
         if (page != null) {
-            request.queryParam("page", page);
+            baseRequest.queryParam("page", page);
         }
 
         if (perPage != null) {
-            request.queryParam("per_page", perPage);
+            baseRequest.queryParam("per_page", perPage);
         }
 
-        response = request
+        baseResponse = baseRequest
                 .get("/users")
                 .then()
                 .extract()
                 .response();
 
-        return new JSONObject(response.getBody().asString());
+        return new JSONObject(baseResponse.getBody().asString());
     }
 
     /**
@@ -36,11 +36,11 @@ public class Users extends BaseRequest {
      * @return A JSONObject representing the details of the user.
      */
     public JSONObject getDetailUser(String userId) {
-        response = request
+        baseResponse = baseRequest
                 .get("/users/" + userId)
                 .then()
                 .extract()
                 .response();
-        return new JSONObject(response.getBody().asString());
+        return new JSONObject(baseResponse.getBody().asString());
     }
 }
