@@ -3,8 +3,9 @@ package tests;
 import io.restassured.path.json.JsonPath;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import services.Users;
+import services.UsersRequest;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -12,11 +13,11 @@ import static org.testng.Assert.assertTrue;
 public class TestUsers {
     private JSONObject listUsers;
     private JSONObject response;
-    private Users users;
+    private UsersRequest users;
 
     @BeforeMethod
     void before() {
-        users = new Users();
+        users = new UsersRequest();
     }
 
     @Test(description = "GET list users")
@@ -25,11 +26,7 @@ public class TestUsers {
 
         // Assertions
         users.verifyStatusCode(200);
-        assertEquals(response.getInt("page"), 1);
-        assertEquals(response.getInt("per_page"), 6);
-        assertTrue(response.getInt("total") > 0);
-        assertEquals(response.getInt("total_pages"), response.getInt("total") / response.getInt("per_page"));
-        assertEquals(response.getJSONArray("data").length(), 6);
+        this.doAssertGetList(1, 6);
     }
 
     @Test(description = "GET list users with custom 'page' and 'per_page'")
@@ -38,11 +35,7 @@ public class TestUsers {
 
         // Assertions
         users.verifyStatusCode(200);
-        assertEquals(response.getInt("page"), 2);
-        assertEquals(response.getInt("per_page"), 4);
-        assertTrue(response.getInt("total") > 0);
-        assertEquals(response.getInt("total_pages"), response.getInt("total") / response.getInt("per_page"));
-        assertEquals(response.getJSONArray("data").length(), 4);
+        this.doAssertGetList(2, 4);
     }
 
     @Test(description = "GET detail user with valid User ID", dependsOnMethods = "getListUsers")
@@ -91,5 +84,32 @@ public class TestUsers {
         // Assertions
         users.verifyStatusCode(404);
         assertTrue(response.isEmpty());
+    }
+
+    @DataProvider(name = "InvalidUserId")
+    public Object[][] testData() {
+        return new Object[][]{
+                {"-1"},
+                {"invalid"},
+                {"999"}
+        };
+    }
+
+    @Test(dataProvider = "InvalidUserId", description = "GET detail user with invalid User ID")
+    public void getDetailUserWithInvalidUserId(String userId) {
+        response = users.getDetailUser(userId);
+
+        // Assertions
+        users.verifyStatusCode(404);
+        assertTrue(response.isEmpty());
+    }
+
+    private void doAssertGetList(int page, int perPage) {
+        users.verifyStatusCode(200);
+        assertEquals(response.getInt("page"), page);
+        assertEquals(response.getInt("per_page"), perPage);
+        assertTrue(response.getInt("total") > 0);
+        assertEquals(response.getInt("total_pages"), (int) Math.ceil(response.getInt("total") / response.getInt("per_page")));
+        assertEquals(response.getJSONArray("data").length(), perPage);
     }
 }

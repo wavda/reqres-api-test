@@ -10,8 +10,8 @@ import io.restassured.specification.RequestSpecification;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class BaseRequest {
-    protected Response response;
-    protected RequestSpecification request;
+    protected Response baseResponse;
+    protected RequestSpecification baseRequest;
     RestAssuredConfig timeoutConfig;
 
     public BaseRequest() {
@@ -20,19 +20,20 @@ public class BaseRequest {
                         .setParam("http.connection.timeout", 30000));
 
         RestAssured.baseURI = "http://reqres.in/api";
-        request = RestAssured
+        baseRequest = RestAssured
                 .given()
                 .config(timeoutConfig);
     }
 
     /**
-     * Verifies the status code of the API response.
+     * Verifies the status code of the base response matches the expected status code.
+     * It also adds attachments to Allure report for the status code and response body.
      *
-     * @param expectedStatusCode The expected status code to compare against the actual response status code.
+     * @param expectedStatusCode The expected status code to compare against.
      */
     public void verifyStatusCode(int expectedStatusCode) {
-        Allure.addAttachment("Status Code", String.valueOf(response.getStatusCode()));
-        Allure.addAttachment("Response Body", response.getBody().asString());
-        assertEquals(expectedStatusCode, response.getStatusCode());
+        Allure.addAttachment("Status Code", String.valueOf(baseResponse.getStatusCode()));
+        Allure.addAttachment("Response Body", baseResponse.getBody().asString());
+        assertEquals(expectedStatusCode, baseResponse.getStatusCode());
     }
 }
