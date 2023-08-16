@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+  chrome:
+    platform: linux/amd64
+    image: selenium/node-chrome:4.10.0
+    container_name: node-chrome
+    volumes:
+      - /dev/shm:/dev/shm
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_MAX_INSTANCES=2
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_NODE_SESSION_TIMEOUT=90
+      - SE_SESSION_REQUEST_TIMEOUT=1800000
+      - SE_START_XVFB=true
+    networks:
+      - grid
+
+  firefox:
+    platform: linux/amd64
+    image: selenium/node-firefox:4.10.0
+    container_name: node-firefox
+    volumes:
+      - /dev/shm:/dev/shm
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_MAX_INSTANCES=2
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_NODE_SESSION_TIMEOUT=90
+      - SE_SESSION_REQUEST_TIMEOUT=1800000
+      - SE_START_XVFB=true
+      - HUB_HOST=selenium-hub
+    networks:
+      - grid
+
+  selenium-hub:
+    platform: linux/amd64
+    image: selenium/hub:4.10.0
+    container_name: selenium-hub
+    ports:
+      - "127.0.0.1:4442:4442"
+      - "127.0.0.1:4443:4443"
+      - "127.0.0.1:4444:4444"
+    networks:
+      - grid
+
+  jenkins:
+    image: jenkins/jenkins:2.416-jdk17
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - grid
+
+volumes:
+  jenkins_home:
+
+networks:
+  grid:
+    driver: bridge
